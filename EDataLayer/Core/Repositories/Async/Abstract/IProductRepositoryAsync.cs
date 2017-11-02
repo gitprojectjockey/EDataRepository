@@ -10,9 +10,13 @@ namespace EDataLayer.Core.Repositories.Async.Abstract
     {
         Task<IEnumerable<Product>> ProductsByCompanyAndProductCategoryAsync(Company company,ProductCategory productCategory);
 
-        Task<bool> ProductExistsAsync(Product product);
+        Task<bool> ProductExistsForUpdateAsync(Product product);
 
-        Task<bool> ProductRangeExistsAsync(IEnumerable<Product> products);
+        Task<bool> ProductExistsForCreateAsync(Product product);
+
+        Task<bool> ProductRangeExistsForUpdateAsync(IEnumerable<Product> products);
+
+        Task<bool> ProductRangeExistsForCreateAsync(IEnumerable<Product> products);
 
         Task<IEnumerable<Product>> GetProductsByRangeAsync(IEnumerable<Product> products);
 

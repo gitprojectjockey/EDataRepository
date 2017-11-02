@@ -26,13 +26,31 @@ namespace EDataLayer.Core.Repositories.Async.Concrete
                 .ToListAsync() as IEnumerable<Product>;
         }
 
-        public async Task<bool> ProductExistsAsync(Product product)
+        public async Task<bool> ProductExistsForUpdateAsync(Product product)
+        {
+            //return await _context.Products.CountAsync(
+            //    p => p.ProductName == product.ProductName && p.CompanyId == product.CompanyId && p.ProductCategoryId == product.ProductCategoryId) > 0;
+
+            return await _context.Products.CountAsync(
+                   p => p.ProductId == product.ProductId) > 0;
+        }
+
+        public async Task<bool> ProductExistsForCreateAsync(Product product)
         {
             return await _context.Products.CountAsync(
                 p => p.ProductName == product.ProductName && p.CompanyId == product.CompanyId && p.ProductCategoryId == product.ProductCategoryId) > 0;
         }
 
-        public async Task<bool> ProductRangeExistsAsync(IEnumerable<Product> products)
+        public async Task<bool> ProductRangeExistsForUpdateAsync(IEnumerable<Product> products)
+        {
+            Task<bool> countsMatch = Task.Factory.StartNew(() => products
+               .Where(p1 => _context.Products
+               .Any(p2 => p2.ProductId == p1.ProductId)).Count() == products.Count());
+
+            return await countsMatch;
+        }
+
+        public async Task<bool> ProductRangeExistsForCreateAsync(IEnumerable<Product> products)
         {
             Task<bool> countsMatch = Task.Factory.StartNew(() => products
                .Where(p1 => _context.Products
@@ -60,12 +78,14 @@ namespace EDataLayer.Core.Repositories.Async.Concrete
         public async Task<IEnumerable<Product>> GetPagedProductsAsync(int displayLength, int displayStart, int sortColumn, string sortDirection, string searchText)
         {
             return await _context.PagedProducts(displayLength, displayStart, sortColumn, sortDirection, searchText);
-            
+
         }
 
         public async Task<IEnumerable<CompanyWithProductResult>> GetPagedProductsByCompanyAsync(string companyName, int displayLength, int displayStart, int sortColumn, string sortDirection, string searchText)
         {
             return await _context.PagedProductsByCompany(companyName, displayLength, displayStart, sortColumn, sortDirection, searchText);
         }
+
+      
     }
 }

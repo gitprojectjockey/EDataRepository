@@ -16,7 +16,7 @@ namespace EDataLayer.Core.Repositories.Async.Concrete
         }
 
         #region Get
-        public async Task<TEntity> GetAsync(Guid id)
+        public virtual async Task<TEntity> GetAsync(Guid id)
         {
             return await _context.Set<TEntity>().FindAsync(id);
         }
@@ -52,7 +52,6 @@ namespace EDataLayer.Core.Repositories.Async.Concrete
         #region Update
         public void Update(TEntity entity)
         {
-           
             _context.Entry<TEntity>(entity).State = EntityState.Modified;
         }
 
